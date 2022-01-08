@@ -6,7 +6,7 @@ namespace FlapKapVendingMachine
         public const string ConnectionString = @"Server=localhost,1433;
         Database=VendingMachine;
         User Id=machineUser;
-        Password=123456;
+        Password=Admin#123;
         Integrated Security=False;
         MultipleActiveResultSets=True";
 

@@ -45,10 +45,24 @@
     <None Remove="Microsoft.VisualStudio.Web.CodeGeneration.Design" />
     <None Remove="System.Linq.Dynamic.Core" />
     <None Remove="Controllers\" />
+    <None Remove="Domain\" />
+    <None Remove="Domain\Models\" />
+    <None Remove="DTOs\" />
+    <None Remove="Persistence\" />
+    <None Remove="Persistence\Contexts\" />
+    <None Remove="Domain\Models\Enums\" />
+    <None Remove="Constants\" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Controllers\" />
+    <Folder Include="Domain\" />
+    <Folder Include="Domain\Models\" />
+    <Folder Include="DTOs\" />
+    <Folder Include="Persistence\" />
+    <Folder Include="Persistence\Contexts\" />
+    <Folder Include="Domain\Models\Enums\" />
+    <Folder Include="Constants\" />
   </ItemGroup>
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">
     <!-- Ensure Node.js is installed -->

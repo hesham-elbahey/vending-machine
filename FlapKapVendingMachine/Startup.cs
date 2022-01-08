@@ -1,9 +1,20 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using System;
+using System.Security.Claims;
+using System.Text;
+using FlapKapVendingMachine.Constants;
+using FlapKapVendingMachine.Domain.Models;
+using FlapKapVendingMachine.Persistence.Contexts;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
 
 namespace FlapKapVendingMachine
 {
@@ -19,7 +30,54 @@ namespace FlapKapVendingMachine
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+
+
             services.AddControllersWithViews();
+
+            services.AddDbContext<AppDbContext>(options => options.UseSqlServer(DummyConstants.ConnectionString));
+            // User Identity middleware
+            services.AddIdentity<ApplicationUser, IdentityRole>(options =>
+            {
+                options.SignIn.RequireConfirmedAccount = false;
+            })
+            .AddRoles<IdentityRole>()
+            .AddEntityFrameworkStores<AppDbContext>();
+
+            services.AddAuthentication(x =>
+            {
+                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(x =>
+            {
+                x.RequireHttpsMetadata = true;
+                x.SaveToken = true;
+                x.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidIssuer = DummyConstants.JWTIssuer,
+                    ValidateAudience = true,
+                    ValidAudience = DummyConstants.JWTAudience,
+                    ValidateIssuerSigningKey = true,
+                    RequireExpirationTime = false,
+                    ValidateLifetime = true,
+                    ClockSkew = TimeSpan.Zero,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(DummyConstants.JWTSecret))
+                };
+            });
+
+            services.AddAuthorization(options => {
+                options.AddPolicy(PolicyNames.SameUser, policy => {
+                    policy.RequireAssertion(context => {
+                        if (context.Resource is HttpContext httpContext)
+                        {
+                            string userId = httpContext.Request.RouteValues["id"] as string;
+                            return httpContext.User.HasClaim(ClaimTypes.NameIdentifier, userId);
+                        }
+                        return false;
+                    });
+                });
+            }
+            );
             // In production, the Angular files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
             {
