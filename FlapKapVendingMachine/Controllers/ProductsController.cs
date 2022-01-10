@@ -35,7 +35,7 @@ namespace FlapKapVendingMachine.Controllers
 
         // GET: api/sellers/{id}/Products
         [HttpGet("~/api/sellers/{id}/products")]
-        [Authorize(Policy = PolicyNames.SameUser)]
+        [Authorize(Policy = PolicyNames.SameSeller)]
         public ActionResult<IEnumerable<ProductDTO>> GetProductsBySeller(string id)
         {
             return _context.Stocks.GetProducts(id);
@@ -58,7 +58,7 @@ namespace FlapKapVendingMachine.Controllers
         // PUT: api/sellers/{id}/Products/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("~/api/sellers/{id}/products/{productId}")]
-        [Authorize(Policy = PolicyNames.SameUser)]
+        [Authorize(Policy = PolicyNames.SameSeller)]
         [ModelValidation]
         public async Task<IActionResult> PutProduct(int productId, ProductDTO productDTO)
         {
@@ -100,7 +100,7 @@ namespace FlapKapVendingMachine.Controllers
         // POST: api/sellers/{id}/Products
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost("~/api/sellers/{id}/products")]
-        [Authorize(Policy = PolicyNames.SameUser)]
+        [Authorize(Policy = PolicyNames.SameSeller)]
         [ModelValidation]
         public async Task<ActionResult<ProductDTO>> PostProduct(ProductDTO productDTO)
         {
@@ -129,7 +129,7 @@ namespace FlapKapVendingMachine.Controllers
 
         // DELETE: api/sellers/{id}/Products/5
         [HttpDelete("~/api/sellers/{id}/products/{productId}")]
-        [Authorize(Policy = PolicyNames.SameUser)]
+        [Authorize(Policy = PolicyNames.SameSeller)]
         public async Task<IActionResult> DeleteProduct(int productId)
         {
             var product = await _context.Products.FindAsync(productId);

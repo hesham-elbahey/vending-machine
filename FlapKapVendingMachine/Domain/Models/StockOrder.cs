@@ -16,6 +16,9 @@ namespace FlapKapVendingMachine.Domain.Models
         public int OrderId { get; set; }
 
         [Required]
+        public int Quantity { get; set; }
+
+        [Required]
         public virtual Order Order { get; set; }
     }
 }

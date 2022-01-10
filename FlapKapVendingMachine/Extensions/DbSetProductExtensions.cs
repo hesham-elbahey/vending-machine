@@ -51,7 +51,7 @@ namespace FlapKapVendingMachine.Extensions
         private static ProductDTO ToProductDTO(out long realAmount, Stock stockProductWithOrder)
         {
             realAmount = stockProductWithOrder.AmountAvailable
-                            - stockProductWithOrder.StockOrders.Count(so => so.Order.Status != OrderStatus.Canceled);
+                            - stockProductWithOrder.StockOrders.Sum(so => so.Order.Status != OrderStatus.Canceled ? so.Quantity : 0);
             return new ProductDTO
             {
                 AmountAvailable = realAmount,

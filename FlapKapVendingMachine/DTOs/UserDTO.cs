@@ -9,6 +9,8 @@ namespace FlapKapVendingMachine.DTOs
 
         public string UserName { get; set; }
 
+        public long Deposit { get; set; }
+
         public UserType Type { get; set; }
     }
 

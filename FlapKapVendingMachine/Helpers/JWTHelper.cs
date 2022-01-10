@@ -141,6 +141,7 @@ namespace FlapKapVendingMachine.Helpers
             userDTO.Id = user.Id;
             userDTO.UserName = user.UserName;
             userDTO.Type = user is Buyer ? UserType.Buyer : UserType.Seller;
+            userDTO.Deposit = user.Deposit;
             var tokenResponse = await BuildTokensAsync(user);
             var loginResponse = new LoginResponse
             {

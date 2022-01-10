@@ -86,6 +86,32 @@ namespace FlapKapVendingMachine
                         return false;
                     });
                 });
+
+                options.AddPolicy(PolicyNames.SameBuyer, policy => {
+                    policy.RequireAssertion(context => {
+                        if (context.Resource is HttpContext httpContext)
+                        {
+                            if (!httpContext.User.IsInRole(RoleNames.Buyer))
+                                return false;
+                            string userId = httpContext.Request.RouteValues["id"] as string;
+                            return httpContext.User.HasClaim(ClaimTypes.NameIdentifier, userId);
+                        }
+                        return false;
+                    });
+                });
+
+                options.AddPolicy(PolicyNames.SameSeller, policy => {
+                    policy.RequireAssertion(context => {
+                        if (context.Resource is HttpContext httpContext)
+                        {
+                            if (!httpContext.User.IsInRole(RoleNames.Seller))
+                                return false;
+                            string userId = httpContext.Request.RouteValues["id"] as string;
+                            return httpContext.User.HasClaim(ClaimTypes.NameIdentifier, userId);
+                        }
+                        return false;
+                    });
+                });
             }
             );
 
