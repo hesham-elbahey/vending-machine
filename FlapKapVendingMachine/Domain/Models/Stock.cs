@@ -15,6 +15,8 @@ namespace FlapKapVendingMachine.Domain.Models
 
         public virtual Product Product { get; set; }
 
+        public long AmountAvailable { get; set; }
+
         [ForeignKey(nameof(VendingMachine))]
         public int VendingMachineId { get; set; }
 

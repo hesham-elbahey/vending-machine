@@ -257,6 +257,7 @@ namespace FlapKapVendingMachine.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     ProductId = table.Column<int>(type: "int", nullable: false),
+                    AmountAvailable = table.Column<long>(type: "bigint", nullable: false),
                     VendingMachineId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>

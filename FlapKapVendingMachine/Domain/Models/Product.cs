@@ -20,7 +20,6 @@ namespace FlapKapVendingMachine.Domain.Models
         public virtual Seller Seller { get; set; }
 
         [Required]
-        [ProductNameUnique]
         public string ProductName { get; set; }
 
         [Required]

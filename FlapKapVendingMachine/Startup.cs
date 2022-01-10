@@ -36,7 +36,6 @@ namespace FlapKapVendingMachine
                 options.JsonSerializerOptions.WriteIndented = true;
             });
 
-            services.AddScoped<IMapper, Mapper>();
             services.AddScoped<IJWTHelper, JWTHelper>();
 
             services.AddDbContext<AppDbContext>(options => options.UseSqlServer(DummyConstants.ConnectionString));
@@ -117,6 +116,10 @@ namespace FlapKapVendingMachine
             }
 
             app.UseRouting();
+
+            app.UseAuthentication();
+
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {

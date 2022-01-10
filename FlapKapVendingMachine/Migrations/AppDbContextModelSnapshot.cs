@@ -16,7 +16,7 @@ namespace FlapKapVendingMachine.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("ProductVersion", "5.0.11")
+                .HasAnnotation("ProductVersion", "5.0.12")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
             modelBuilder.Entity("FlapKapVendingMachine.Domain.Models.ApplicationUser", b =>
@@ -239,6 +239,9 @@ namespace FlapKapVendingMachine.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<long>("AmountAvailable")
+                        .HasColumnType("bigint");
 
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
