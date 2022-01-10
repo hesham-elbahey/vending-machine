@@ -13,6 +13,7 @@ using FlapKapVendingMachine.Helpers.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 
 namespace FlapKapVendingMachine.Controllers
 {
@@ -60,6 +61,7 @@ namespace FlapKapVendingMachine.Controllers
                 user = new Seller();
                 roleName = RoleNames.Seller;
             }
+            user.UserName = registerDTO.UserName;
             await _userManager.CreateAsync(user, registerDTO.Password);
             if (!(await _roleManager.RoleExistsAsync(roleName)))
             {
@@ -88,6 +90,39 @@ namespace FlapKapVendingMachine.Controllers
                 return Ok(await _jWTHelper.GetLoginResponseAsync(user));
             return Unauthorized(unsuccessful);
         }
-        
+
+        [Route("refreshtoken")]
+        [HttpPost]
+        [ModelValidation]
+        public async Task<ActionResult<TokenResponse>> RefreshToken(TokenDTO tokenDTO)
+        {
+            ClaimsPrincipal principal;
+            try
+            {
+                principal = _jWTHelper.GetPrincipalFromToken(tokenDTO.AccessToken);
+            }
+            catch (Exception ex)
+            {
+                return Unauthorized(new { ex.Message });
+            }
+            if (principal == null)
+                return Unauthorized(new { Message = "Invalid access token." });
+            string userId = principal.FindFirstValue(ClaimTypes.NameIdentifier);
+            try
+            {
+                if (await _jWTHelper.RevokeRefreshTokenAsync(userId, tokenDTO.RefreshToken))
+                {
+                    string refreshToken = await _jWTHelper.BuildRefreshTokenAsync(userId);
+                    string accessToken = _jWTHelper.BuildToken(principal.Claims.ToList());
+                    return new TokenResponse { AccessToken = accessToken, RefreshToken = refreshToken };
+                }
+                return Unauthorized(new { Message = "Invalid refresh token." });
+            }
+            catch (SecurityTokenExpiredException ex)
+            {
+                return Unauthorized(new { ex.Message });
+            }
+        }
+
     }
 }
