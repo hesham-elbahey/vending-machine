@@ -56,6 +56,7 @@
     <None Remove="Helpers\Interfaces\" />
     <None Remove="Extensions\" />
     <None Remove="Attributes\" />
+    <None Remove="DTOs\Enums\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -71,6 +72,7 @@
     <Folder Include="Helpers\Interfaces\" />
     <Folder Include="Extensions\" />
     <Folder Include="Attributes\" />
+    <Folder Include="DTOs\Enums\" />
   </ItemGroup>
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">
     <!-- Ensure Node.js is installed -->

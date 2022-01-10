@@ -10,6 +10,8 @@ namespace FlapKapVendingMachine
         Integrated Security=False;
         MultipleActiveResultSets=True";
 
+        public const string DatabaseName = "VendingMachine";
+
         public const string JWTSecret = "Secret";
         public const string JWTIssuer = "Issuer";
         public const string JWTAudience = "Audience";

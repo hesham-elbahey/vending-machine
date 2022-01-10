@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using FlapKapVendingMachine.Attributes;
 using Microsoft.EntityFrameworkCore;
 
 namespace FlapKapVendingMachine.Domain.Models
@@ -19,6 +20,7 @@ namespace FlapKapVendingMachine.Domain.Models
         public virtual Seller Seller { get; set; }
 
         [Required]
+        [ProductNameUnique]
         public string ProductName { get; set; }
 
         [Required]

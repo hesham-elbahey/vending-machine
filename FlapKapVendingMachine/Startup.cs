@@ -3,6 +3,8 @@ using System.Security.Claims;
 using System.Text;
 using FlapKapVendingMachine.Constants;
 using FlapKapVendingMachine.Domain.Models;
+using FlapKapVendingMachine.Helpers;
+using FlapKapVendingMachine.Helpers.Interfaces;
 using FlapKapVendingMachine.Persistence.Contexts;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -30,15 +32,24 @@ namespace FlapKapVendingMachine
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddControllersWithViews().AddJsonOptions(options => {
+                options.JsonSerializerOptions.WriteIndented = true;
+            });
 
-
-            services.AddControllersWithViews();
+            services.AddScoped<IMapper, Mapper>();
+            services.AddScoped<IJWTHelper, JWTHelper>();
 
             services.AddDbContext<AppDbContext>(options => options.UseSqlServer(DummyConstants.ConnectionString));
             // User Identity middleware
             services.AddIdentity<ApplicationUser, IdentityRole>(options =>
             {
                 options.SignIn.RequireConfirmedAccount = false;
+                options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+/ ";
+                options.Password.RequireDigit = false;
+                options.Password.RequiredLength = 1;
+                options.Password.RequireLowercase = false;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = false;
             })
             .AddRoles<IdentityRole>()
             .AddEntityFrameworkStores<AppDbContext>();
@@ -78,6 +89,8 @@ namespace FlapKapVendingMachine
                 });
             }
             );
+
+            
             // In production, the Angular files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
             {

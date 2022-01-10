@@ -7,8 +7,11 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using FlapKapVendingMachine.Domain.Models;
+using FlapKapVendingMachine.DTOs;
+using FlapKapVendingMachine.DTOs.Enums;
 using FlapKapVendingMachine.Helpers.Interfaces;
 using FlapKapVendingMachine.Persistence.Contexts;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 
 namespace FlapKapVendingMachine.Helpers
@@ -17,9 +20,12 @@ namespace FlapKapVendingMachine.Helpers
     {
         private readonly AppDbContext _context;
 
-        public JWTHelper(AppDbContext context)
+        private readonly UserManager<ApplicationUser> _userManager;
+
+        public JWTHelper(AppDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         public string BuildToken(List<Claim> claims)
@@ -107,6 +113,42 @@ namespace FlapKapVendingMachine.Helpers
             var refreshTokens = _context.RefreshTokens.Where(r => r.UserId == userId);
             _context.RemoveRange(refreshTokens);
             await _context.SaveChangesAsync();
+        }
+
+        private async Task<TokenResponse> BuildTokensAsync(ApplicationUser user)
+        {
+            var userRoles = (await _userManager.GetRolesAsync(user)).Select(c => new Claim(ClaimTypes.Role, c));
+            var claims = BuildClaims(user);
+            claims.AddRange(userRoles);
+            var accessToken = BuildToken(claims);
+            var refreshToken = await BuildRefreshTokenAsync(user.Id);
+            return new TokenResponse { AccessToken = accessToken, RefreshToken = refreshToken };
+        }
+
+        private static List<Claim> BuildClaims(ApplicationUser user)
+        {
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.NameIdentifier, user.Id),
+            };
+
+            return claims;
+        }
+
+        public async Task<LoginResponse> GetLoginResponseAsync(ApplicationUser user)
+        {
+            UserDTO userDTO = new();
+            userDTO.Id = user.Id;
+            userDTO.UserName = user.UserName;
+            userDTO.Type = user is Buyer ? UserType.Buyer : UserType.Seller;
+            var tokenResponse = await BuildTokensAsync(user);
+            var loginResponse = new LoginResponse
+            {
+                AccessToken = tokenResponse.AccessToken,
+                RefreshToken = tokenResponse.RefreshToken,
+                User = userDTO
+            };
+            return loginResponse;
         }
     }
 }
