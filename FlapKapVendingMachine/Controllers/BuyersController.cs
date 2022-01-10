@@ -80,7 +80,10 @@ namespace FlapKapVendingMachine.Controllers
         {
             var cartDictionary = cartDTO.Cart.ToDictionary(k => k.ProductId, v => v.Quantity);
             var productList = cartDTO.Cart.Select(c => c.ProductId);
-            var stockList = _context.Stocks.Where(s => productList.Contains(s.ProductId));
+            var stockList = _context.Stocks.Include(s => s.Product)
+                .ThenInclude(p => p.Seller)
+                .Where(s => productList.Contains(s.ProductId));
+            Seller seller;
             long totalValue = _context.Stocks
                 .Select(s => s.Product)
                 .Where(p => productList.Contains(p.Id)).ToList().Sum(p => p.Cost * cartDictionary[p.Id]);
@@ -91,7 +94,10 @@ namespace FlapKapVendingMachine.Controllers
             foreach (var stock in stockList)
             {
                 stockOrder = new() { OrderId = order.Id, StockId = stock.Id, Quantity = cartDictionary[stock.ProductId]};
+                seller = stock.Product.Seller;
+                seller.Deposit += stock.Product.Cost * stockOrder.Quantity;
                 _context.StockOrders.Add(stockOrder);
+                _context.Entry(seller).State = EntityState.Modified;
             }
             var buyer = await _context.Users.FindAsync(id);
             buyer.Deposit -= totalValue;
