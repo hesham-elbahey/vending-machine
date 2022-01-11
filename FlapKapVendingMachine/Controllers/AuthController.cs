@@ -41,7 +41,7 @@ namespace FlapKapVendingMachine.Controllers
         }
 
         /// <summary>
-        /// 
+        /// Register new users
         /// </summary>
         /// <param name="registerDTO">A DTO containing the username, password, and type of a user</param>
         /// <returns>An ActionResult indicating whether the user was created or not</returns>
@@ -74,7 +74,7 @@ namespace FlapKapVendingMachine.Controllers
         }
 
         /// <summary>
-        /// 
+        /// Login users
         /// </summary>
         /// <param name="loginDTO">A DTO containing the username and password of a user</param>
         /// <returns>An ActionResult containing an access token and a refresh token upon success</returns>
@@ -91,6 +91,11 @@ namespace FlapKapVendingMachine.Controllers
             return Unauthorized(unsuccessful);
         }
 
+        /// <summary>
+        /// Using the refresh token to stay logged in for as long as possible
+        /// </summary>
+        /// <param name="tokenDTO">A DTO containing an access and a refresh token</param>
+        /// <returns>The newly created access and refresh tokens for further use</returns>
         [Route("refreshtoken")]
         [HttpPost]
         [ModelValidation]

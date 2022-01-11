@@ -26,6 +26,10 @@ namespace FlapKapVendingMachine.Controllers
             _context = context;
         }
 
+        /// <summary>
+        /// Get all products
+        /// </summary>
+        /// <returns>A list of product objects</returns>
         // GET: api/Products
         [HttpGet]
         public ActionResult<IEnumerable<ProductDTO>> GetProducts()
@@ -33,6 +37,11 @@ namespace FlapKapVendingMachine.Controllers
             return _context.Stocks.GetProducts();
         }
 
+        /// <summary>
+        /// Get all products of a specific seller
+        /// </summary>
+        /// <param name="id">The seller ID</param>
+        /// <returns>A list of product objects</returns>
         // GET: api/sellers/{id}/Products
         [HttpGet("~/api/sellers/{id}/products")]
         [Authorize(Policy = PolicyNames.SameSeller)]
@@ -41,6 +50,11 @@ namespace FlapKapVendingMachine.Controllers
             return _context.Stocks.GetProducts(id);
         }
 
+        /// <summary>
+        /// Get a specific product
+        /// </summary>
+        /// <param name="id">The product ID</param>
+        /// <returns>A specific product</returns>
         // GET: api/Products/5
         [HttpGet("{id}")]
         public ActionResult<ProductDTO> GetProduct(int id)
@@ -55,17 +69,27 @@ namespace FlapKapVendingMachine.Controllers
             return productDTO;
         }
 
+        /// <summary>
+        /// Update a product
+        /// </summary>
+        /// <param name="productId">The product ID</param>
+        /// <param name="productDTO">A DTO containing the product object</param>
+        /// <param name="id">The seller ID</param>
+        /// <returns>No content</returns>
         // PUT: api/sellers/{id}/Products/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("~/api/sellers/{id}/products/{productId}")]
         [Authorize(Policy = PolicyNames.SameSeller)]
         [ModelValidation]
-        public async Task<IActionResult> PutProduct(int productId, ProductDTO productDTO)
+        #pragma warning disable IDE0060 // Remove unused parameter
+        public async Task<IActionResult> PutProduct(int productId, ProductDTO productDTO, string id)
+        #pragma warning restore IDE0060 // Remove unused parameter
         {
             if (productId != productDTO.Id)
             {
                 return BadRequest();
             }
+
             Product product = new()
             {
                 ProductName = productDTO.ProductName,
@@ -97,6 +121,11 @@ namespace FlapKapVendingMachine.Controllers
             return NoContent();
         }
 
+        /// <summary>
+        /// Create a new product
+        /// </summary>
+        /// <param name="productDTO">A DTO containing the product object</param>
+        /// <returns>The newly created product</returns>
         // POST: api/sellers/{id}/Products
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost("~/api/sellers/{id}/products")]
@@ -127,6 +156,11 @@ namespace FlapKapVendingMachine.Controllers
             return CreatedAtAction("GetProduct", new { id = product.Id }, productDTO);
         }
 
+        /// <summary>
+        /// Delete a product
+        /// </summary>
+        /// <param name="productId">The product ID</param>
+        /// <returns>No content</returns>
         // DELETE: api/sellers/{id}/Products/5
         [HttpDelete("~/api/sellers/{id}/products/{productId}")]
         [Authorize(Policy = PolicyNames.SameSeller)]

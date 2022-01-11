@@ -29,6 +29,12 @@ namespace FlapKapVendingMachine.Controllers
             _userManager = userManager;
         }
 
+        /// <summary>
+        /// Update the username of the user
+        /// </summary>
+        /// <param name="updateUserDTO">A DTO containing the username of the user</param>
+        /// <param name="id">The user ID</param>
+        /// <returns>No content</returns>
         // PATCH: api/Users/{id}
         [HttpPatch("{id}")]
         [Authorize(Policy = PolicyNames.SameUser)]
@@ -43,6 +49,11 @@ namespace FlapKapVendingMachine.Controllers
             return NoContent();
         }
 
+        /// <summary>
+        /// Get a specific user
+        /// </summary>
+        /// <param name="id">The user ID</param>
+        /// <returns>The user object</returns>
         // GET: api/Users/{id}
         [HttpGet("{id}")]
         [Authorize(Policy = PolicyNames.SameUser)]
@@ -59,6 +70,12 @@ namespace FlapKapVendingMachine.Controllers
             return userDTO;
         }
 
+        /// <summary>
+        /// Update the user password
+        /// </summary>
+        /// <param name="passwordDTO">A DTO containing the current password and the new password</param>
+        /// <param name="id">The user ID</param>
+        /// <returns>No content</returns>
         // PATCH: api/Users/{id}
         [HttpPatch("{id}/changepassword")]
         [Authorize(Policy = PolicyNames.SameUser)]

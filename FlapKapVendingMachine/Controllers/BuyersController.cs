@@ -27,6 +27,12 @@ namespace FlapKapVendingMachine.Controllers
             _context = context;
         }
 
+        /// <summary>
+        /// Deposit coins into the vending machine
+        /// </summary>
+        /// <param name="depositDTOs">A DTO containing different coin denominations with their quantities</param>
+        /// <param name="id">The buyer ID</param>
+        /// <returns>A list of coin denominations with their updated quantities</returns>
         // POST: api/Buyers/{id}/deposit
         [HttpPost("~/api/buyers/{id}/deposit")]
         [Authorize(Policy = PolicyNames.SameBuyer)]
@@ -49,6 +55,11 @@ namespace FlapKapVendingMachine.Controllers
             return coinDTOs;
         }
 
+        /// <summary>
+        /// Withdraw all of the current balance from the vending machine
+        /// </summary>
+        /// <param name="id">The buyer ID</param>
+        /// <returns>A list of coin denominations with their updated quantities</returns>
         // POST: api/Buyers/{id}/reset
         [HttpPost("~/api/buyers/{id}/reset")]
         [Authorize(Policy = PolicyNames.SameBuyer)]
@@ -72,6 +83,12 @@ namespace FlapKapVendingMachine.Controllers
             return coinDTOs;
         }
 
+        /// <summary>
+        /// Buy products from the vending machine
+        /// </summary>
+        /// <param name="cartDTO">A DTO containing the list of products with their quantities to be bought</param>
+        /// <param name="id">The buyer ID</param>
+        /// <returns>The user object</returns>
         // POST: api/Buyers/{id}/buy
         [HttpPost("~/api/buyers/{id}/buy")]
         [Authorize(Policy = PolicyNames.SameBuyer)]
